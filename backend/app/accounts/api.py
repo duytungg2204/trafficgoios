@@ -45,13 +45,14 @@ class Credentials(BaseModel):
 
 
 class Registration(Credentials):
-    nickname: str = Field(min_length=1, max_length=100)
+    nickname: str | None = Field(default=None, min_length=1, max_length=100)
 
     @model_validator(mode='before')
     @classmethod
     def trim_nickname(cls, values):
         if isinstance(values, dict) and isinstance(values.get('nickname'), str):
-            values = {**values, 'nickname': values['nickname'].strip()}
+            nickname = values['nickname'].strip() or None
+            values = {**values, 'nickname': nickname}
         return values
 
 
@@ -127,9 +128,10 @@ def create_router(access, db):
     @router.post('/register', status_code=201, dependencies=[Depends(throttle)])
     def register(body: Registration, session=Depends(transaction_db)):
         username = body.username.lower()
+        nickname = body.nickname or username
         password_hash = hash_password(body.password)
         account = Account(user_id='account-'+secrets.token_hex(16), username=username,
-                          password_hash=password_hash, profile={'setup_complete':False, 'nickname':body.nickname, 'display_name':body.nickname})
+                          password_hash=password_hash, profile={'setup_complete':False, 'nickname':nickname, 'display_name':nickname})
         try:
             session.add(User(id=account.user_id));session.flush();session.add(account);session.flush()
             return issue(session, account)

@@ -137,7 +137,6 @@ class _HomeGateState extends ConsumerState<HomeGate> {
                 body: Center(child: CircularProgressIndicator()),
               );
             }
-            if (!account.complete) return const PersonalSetupScreen();
             return DepartureNotificationBridge(
               child: TrafficHomeShell(key: ValueKey('account:${account.id}')),
             );
@@ -174,7 +173,7 @@ class _HomeGateState extends ConsumerState<HomeGate> {
                       ),
                       const SizedBox(height: 20),
                       const Text(
-                        'Tìm địa điểm, so sánh tuyến đường và quản lý hành trình hằng ngày.',
+                        'Tìm địa điểm và xem tuyến đường ngay. Bạn có thể tạo tài khoản và lịch nhắc sau.',
                       ),
                       const SizedBox(height: 20),
                       const Text(
@@ -184,13 +183,22 @@ class _HomeGateState extends ConsumerState<HomeGate> {
                       SizedBox(
                         width: double.infinity,
                         child: TrafficPrimaryButton(
+                          onPressed: () => state.completeOnboarding(),
+                          child: const Text('Dùng thử không cần tài khoản'),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Center(
+                        child: TextButton(
                           onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (_) => const AccountScreen(),
                             ),
                           ),
-                          child: const Text('Bắt đầu khám phá'),
+                          child: const Text(
+                            'Tạo tài khoản để đồng bộ lịch nhắc',
+                          ),
                         ),
                       ),
                     ],

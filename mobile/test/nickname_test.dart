@@ -6,19 +6,21 @@ import 'package:trafficgo/app/state.dart';
 import 'package:trafficgo/features/onboarding/screens.dart';
 
 void main() {
-  testWidgets('Signup requires nickname; login does not show nickname', (tester) async {
+  testWidgets('Signup and login only ask for username and password', (
+    tester,
+  ) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
-    await tester.pumpWidget(ProviderScope(
-      overrides: [preferencesProvider.overrideWithValue(prefs)],
-      child: const MaterialApp(home: AccountScreen()),
-    ));
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [preferencesProvider.overrideWithValue(prefs)],
+        child: const MaterialApp(home: AccountScreen()),
+      ),
+    );
     await tester.pumpAndSettle();
-    expect(find.text('Nickname'), findsOneWidget);
-    await tester.ensureVisible(find.text('Tạo tài khoản'));
-    await tester.tap(find.text('Tạo tài khoản'));
-    await tester.pump();
-    expect(find.text('Vui lòng nhập nickname từ 1 đến 100 ký tự.'), findsOneWidget);
+    expect(find.text('Nickname'), findsNothing);
+    expect(find.text('Tên đăng nhập (không dấu)'), findsOneWidget);
+    expect(find.text('Mật khẩu (ít nhất 10 ký tự)'), findsOneWidget);
     await tester.ensureVisible(find.text('Đã có tài khoản? Đăng nhập'));
     await tester.tap(find.text('Đã có tài khoản? Đăng nhập'));
     await tester.pumpAndSettle();

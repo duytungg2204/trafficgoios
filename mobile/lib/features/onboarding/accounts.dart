@@ -170,5 +170,5 @@ String accountError(Object e) {
       return 'Kiểm tra tên đăng nhập, mật khẩu và thông tin lịch.';
     }
   }
-  return 'Không kết nối được backend Windows. Kiểm tra mạng và cấu hình access token trong Cài đặt.';
+  return 'Không kết nối được backend. Kiểm tra URL máy chủ và access token trong Cài đặt → Kết nối backend.';
 }

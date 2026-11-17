@@ -114,11 +114,14 @@ def test_additive_migration_preserves_guest_records(tmp_path, monkeypatch):
     engine.dispose()
 
 
-def test_registration_nickname_required_and_persistent(client):
+def test_registration_nickname_optional_and_persistent(client):
     base = {'username':'nicktest', 'password':'local-test-password-123'}
-    for extra in ({}, {'nickname':'   '}, {'nickname':'x'*101}):
-        assert client.post('/api/v1/accounts/register', json={**base, **extra}).status_code == 422
-    response = client.post('/api/v1/accounts/register', json={**base, 'nickname':'  Tùng  '})
+    basic = client.post('/api/v1/accounts/register', json=base)
+    assert basic.status_code == 201
+    assert basic.json()['profile']['nickname'] == 'nicktest'
+    assert client.post('/api/v1/accounts/register', json={**base, 'username':'blanknick', 'nickname':'   '}).status_code == 201
+
+    response = client.post('/api/v1/accounts/register', json={**base, 'username':'namedtest', 'nickname':'  Tùng  '})
     assert response.status_code == 201
     account = response.json()
     assert account['profile']['nickname'] == 'Tùng'

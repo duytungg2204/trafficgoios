@@ -35,23 +35,16 @@ class AccountScreen extends ConsumerStatefulWidget {
 
 class _AccountScreenState extends ConsumerState<AccountScreen> {
   final username = TextEditingController(), password = TextEditingController();
-  final nickname = TextEditingController();
   bool register = true, busy = false;
   String? error;
   @override
   void dispose() {
-    nickname.dispose();
     username.dispose();
     password.dispose();
     super.dispose();
   }
 
   Future<void> submit() async {
-    if (register &&
-        (nickname.text.trim().isEmpty || nickname.text.trim().length > 100)) {
-      setState(() => error = 'Vui lòng nhập nickname từ 1 đến 100 ký tự.');
-      return;
-    }
     if (!RegExp(r'^[a-zA-Z0-9_.-]{3,40}$').hasMatch(username.text.trim()) ||
         password.text.length < 10 ||
         password.text.length > 128) {
@@ -72,7 +65,6 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             username.text,
             password.text,
             register: register,
-            nickname: nickname.text,
           );
       password.clear();
       await reloadPersonalData(ref);
@@ -105,7 +97,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             Text(
               c.complete
                   ? 'Đã thiết lập hồ sơ cá nhân'
-                  : 'Cần hoàn tất thiết lập ban đầu',
+                  : 'Bạn có thể dùng app ngay; thiết lập xe và lịch nhắc sau.',
             ),
             if (c.error != null) Text(c.error!),
             const Text(
@@ -116,7 +108,11 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 context,
                 MaterialPageRoute(builder: (_) => const PersonalSetupScreen()),
               ),
-              child: const Text('Xem thiết lập ban đầu'),
+              child: Text(
+                c.complete
+                    ? 'Xem thông tin thiết lập'
+                    : 'Thiết lập xe và lịch nhắc (tùy chọn)',
+              ),
             ),
             TextButton(
               onPressed: busy
@@ -145,24 +141,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             padding: const EdgeInsets.all(24),
             children: [
               const Text(
-                'Hồ sơ riêng cho xe, hành trình và lịch đi lại của bạn.',
+                'Tài khoản giúp đồng bộ lịch nhắc. Bản đồ và tìm tuyến dùng được trước khi đăng ký.',
               ),
               const SizedBox(height: 20),
-              if (register) ...[
-                TextField(
-                  controller: nickname,
-                  enabled: !busy,
-                  maxLength: 100,
-                  textCapitalization: TextCapitalization.words,
-                  autofillHints: const [AutofillHints.nickname],
-                  decoration: const InputDecoration(
-                    labelText: 'Nickname',
-                    helperText:
-                        'Tên TrafficGo dùng để gọi bạn và hiển thị trên hồ sơ.',
-                  ),
-                ),
-                const SizedBox(height: 16),
-              ],
               TextField(
                 controller: username,
                 autocorrect: false,
@@ -214,7 +195,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 ),
               ),
               const Text(
-                'Tài khoản đang dùng backend Windows. Chưa hỗ trợ khôi phục mật khẩu qua email.',
+                'Tài khoản hiện lưu lịch nhắc trên backend của bạn. Chưa hỗ trợ khôi phục mật khẩu qua email.',
               ),
               TextButton(
                 onPressed: () => context.push('/settings'),
@@ -539,11 +520,8 @@ class _PersonalSetupScreenState extends ConsumerState<PersonalSetupScreen> {
       'Chọn tuyến',
       'Lịch đi lại',
     ];
-    return PopScope(
-      canPop: false,
-      child: Scaffold(
+    return Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false,
           title: const Text('Thiết lập TrafficGo'),
           actions: [
             TextButton(
@@ -828,7 +806,6 @@ class _PersonalSetupScreenState extends ConsumerState<PersonalSetupScreen> {
             ),
           ),
         ),
-      ),
     );
   }
 }

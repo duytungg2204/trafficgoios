@@ -226,7 +226,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Bắt đầu khám phá'), findsOneWidget);
+    expect(find.text('Dùng thử không cần tài khoản'), findsOneWidget);
     expect(find.textContaining('Không theo dõi nền'), findsOneWidget);
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
       const MethodChannel('plugins.it_nomads.com/flutter_secure_storage'),
@@ -287,7 +287,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
-      find.text('Bắt đầu khám phá'),
+      find.text('Dùng thử không cần tài khoản'),
       250,
       scrollable: find.byType(Scrollable),
     );
