@@ -15,6 +15,10 @@ Flutter + FastAPI cho bản đồ/giao thông Hà Nội, tập trung iPhone. Đ�
 4. Mobile: từ mobile chạy `flutter pub get`, `flutter run --dart-define=API_BASE_URL=https://YOUR_BACKEND`. Nhập app access token trong Cài đặt. Guest saved places hoạt động cục bộ, không cần account/database.
 5. Dùng tìm kiếm hoặc nhấn giữ bản đồ, định vị GPS rồi tìm tuyến ô tô/xe máy; chọn alternative nếu provider có. Xe máy dùng Valhalla motor_scooter; tuân thủ biển báo thực tế.
 
+## Docker backend và tunnel thử nghiệm
+
+Xem [hướng dẫn Docker/Cloudflare Quick Tunnel](docs/DOCKER_TUNNEL.md) để chạy PostgreSQL và FastAPI trong Compose, rồi tạo URL HTTPS tạm thời cho app. Tunnel chỉ trỏ tới backend; database chỉ mở trên localhost.
+
 ## Tài liệu
 
 - [Kiến trúc và giới hạn](docs/ARCHITECTURE.md)
